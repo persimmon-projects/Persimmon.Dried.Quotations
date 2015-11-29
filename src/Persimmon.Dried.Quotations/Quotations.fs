@@ -7,6 +7,7 @@ open Microsoft.FSharp.Quotations
 open Patterns
 
 let private (|PropertyName|) (info: PropertyInfo) = info.Name
+let private (|Property|) (info: PropertyInfo) = (info.GetValue(null, null), info.Name)
 
 type QuotationPropertiesBuilder private (builder: PropertiesBuilder) =
   new() = QuotationPropertiesBuilder(PropertiesBuilder())
@@ -33,7 +34,8 @@ type QuotationPropertiesBuilder private (builder: PropertiesBuilder) =
     let p =
       match expr with
       | ValueWithName(p, _, name) 
-      | WithValue(p, _, PropertyGet(_, PropertyName name, _)) ->
+      | WithValue(p, _, PropertyGet(_, PropertyName name, _))
+      | PropertyGet(_, Property(p, name), _) ->
         p :?> Prop |@ name
       | WithValue(p, _, _)
       | Value(p, _) -> p :?> Prop
@@ -44,7 +46,8 @@ type QuotationPropertiesBuilder private (builder: PropertiesBuilder) =
     let p =
       match expr with
       | ValueWithName(p, _, name)
-      | WithValue(p, _, PropertyGet(_, PropertyName name, _)) ->
+      | WithValue(p, _, PropertyGet(_, PropertyName name, _))
+      | PropertyGet(_, Property(p, name), _) ->
         let p = p :?> Prop<'T>
         new Prop<'T>(p.Sample, p |@ name)
       | WithValue(p, _, _)
