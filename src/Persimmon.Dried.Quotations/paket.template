@@ -1,0 +1,15 @@
+type project
+owners
+    bleis-tift, Gab-km, pocketberserker
+authors
+    bleis-tift, Gab-km, pocketberserker
+projectUrl
+    https://github.com/persimmon-projects/Persimmon.Dried.Quotations
+licenseUrl
+    https://github.com/persimmon-projects/Persimmon.Dried.Quotations/blob/master/LICENSE
+requireLicenseAcceptance
+    false
+tags
+    fsharp F testing
+description
+    Persimmon.Dried.Quotations is extension for Persimmon.Dried.
