@@ -55,6 +55,7 @@
     </Content>
     <Compile Include="AssemblyInfo.fs" />
     <None Include="paket.references" />
+    <Compile Include="Quotations.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
