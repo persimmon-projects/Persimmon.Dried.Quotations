@@ -35,6 +35,7 @@ type QuotationPropertiesBuilder private (builder: PropertiesBuilder) =
       match expr with
       | ValueWithName(p, _, name) 
       | WithValue(p, _, PropertyGet(_, PropertyName name, _))
+      | WithValue(p, _, ValueWithName(_, _, name))
       | PropertyGet(_, Property(p, name), _) ->
         p :?> Prop |@ name
       | WithValue(p, _, _)
@@ -47,6 +48,7 @@ type QuotationPropertiesBuilder private (builder: PropertiesBuilder) =
       match expr with
       | ValueWithName(p, _, name)
       | WithValue(p, _, PropertyGet(_, PropertyName name, _))
+      | WithValue(p, _, ValueWithName(_, _, name))
       | PropertyGet(_, Property(p, name), _) ->
         let p = p :?> Prop<'T>
         new Prop<'T>(p.Sample, p |@ name)

@@ -27,17 +27,40 @@ module QuotationsTest =
       try f ()
       with e -> TestCase.makeError None [] e
 
-  let ``record variable name`` = property {
-    apply ``number is zero``
-    test (fun r pr -> not <| Runner.Result.isPassed r && pr.Labels |> Seq.exists ((=) "number is zero"))
-  }
+  module ReturnValue =
 
-  let ``record variable name and return value`` = property {
-    applyReturn ``number is zero``
-    test (fun r pr -> not <| Runner.Result.isPassed r && pr.Labels |> Seq.exists ((=) "number is zero"))
-  }
+    let ``record variable name and return value`` = property {
+      applyReturn ``number is zero``
+      test (fun r pr -> not <| Runner.Result.isPassed r && pr.Labels |> Seq.exists ((=) "number is zero"))
+    }
 
-  let ``value does not have label`` = property {
-    apply (Prop.forAll Arb.int ((=) 0))
-    test (fun r pr -> not <| Runner.Result.isPassed r && Set.isEmpty pr.Labels)
-  }
+    let ``value does not have label`` = property {
+      applyReturn (Prop.forAll Arb.int ((=) 0))
+      test (fun r pr -> not <| Runner.Result.isPassed r && Set.isEmpty pr.Labels)
+    }
+
+    let ``record local variable name`` =
+      let ``number is one`` = Prop.forAll Arb.int ((=) 1)
+      property {
+        applyReturn ``number is one``
+        test (fun r pr -> not <| Runner.Result.isPassed r && pr.Labels |> Seq.exists ((=) "number is one"))
+      }
+
+  module NonReturnValue =
+
+    let ``record variable name`` = property {
+      apply ``number is zero``
+      test (fun r pr -> not <| Runner.Result.isPassed r && pr.Labels |> Seq.exists ((=) "number is zero"))
+    }
+
+    let ``value does not have label`` = property {
+      apply (Prop.forAll Arb.int ((=) 0))
+      test (fun r pr -> not <| Runner.Result.isPassed r && Set.isEmpty pr.Labels)
+    }
+
+    let ``record local variable name`` =
+      let ``number is one`` = Prop.forAll Arb.int ((=) 1)
+      property {
+        apply ``number is one``
+        test (fun r pr -> not <| Runner.Result.isPassed r && pr.Labels |> Seq.exists ((=) "number is one"))
+      }
