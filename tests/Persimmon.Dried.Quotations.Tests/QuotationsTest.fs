@@ -49,13 +49,20 @@ module QuotationsTest =
       }
 
     let ``apply lazy value`` = property {
-        applyReturn ``lazy value``.Value
-        test (fun r pr -> not <| Runner.Result.isPassed r && pr.Labels |> Seq.exists ((=) "lazy value"))
+      applyReturn ``lazy value``.Value
+      test (fun r pr -> not <| Runner.Result.isPassed r && pr.Labels |> Seq.exists ((=) "lazy value"))
     }
 
     let ``apply ref value`` = property {
-        applyReturn !``ref value``
-        test (fun r pr -> not <| Runner.Result.isPassed r && pr.Labels |> Seq.exists ((=) "ref value"))
+      applyReturn !``ref value``
+      test (fun r pr -> not <| Runner.Result.isPassed r && pr.Labels |> Seq.exists ((=) "ref value"))
+    }
+
+    let ``local ref value`` =
+      let ``local value`` = ref <| Prop.forAll Arb.int (fun _ -> false)
+      property {
+        applyReturn !``local value``
+        test (fun _ pr -> pr.Labels |> Seq.exists ((=) "local value"))
     }
 
   module NonReturnValue =
@@ -78,11 +85,18 @@ module QuotationsTest =
       }
 
     let ``apply lazy value`` = property {
-        apply ``lazy value``.Value
-        test (fun r pr -> not <| Runner.Result.isPassed r && pr.Labels |> Seq.exists ((=) "lazy value"))
+      apply ``lazy value``.Value
+      test (fun r pr -> not <| Runner.Result.isPassed r && pr.Labels |> Seq.exists ((=) "lazy value"))
     }
 
     let ``apply ref value`` = property {
-        apply !``ref value``
-        test (fun r pr -> not <| Runner.Result.isPassed r && pr.Labels |> Seq.exists ((=) "ref value"))
+      apply !``ref value``
+      test (fun r pr -> not <| Runner.Result.isPassed r && pr.Labels |> Seq.exists ((=) "ref value"))
+    }
+
+    let ``local ref value`` =
+      let ``local value`` = ref <| Prop.forAll Arb.int (fun _ -> false)
+      property {
+        apply !``local value``
+        test (fun _ pr -> pr.Labels |> Seq.exists ((=) "local value"))
     }

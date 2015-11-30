@@ -17,6 +17,7 @@ let private appendLabel add cast = function
 | WithValue(p, _, ValueWithName(_, _, name))
 // ref
 | WithValue(p, _, Call(_, _, [PropertyGet(_, PropertyName name, _)]))
+| WithValue(p, _, Call(_, _, [ValueWithName(_, _, name)]))
 // get property
 | WithValue(p, _, PropertyGet(_, PropertyName name, _))
 | PropertyGet(_, Property(p, name), _) ->
