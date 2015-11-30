@@ -10,6 +10,7 @@ module QuotationsTest =
   open UseTestNameByReflection
 
   let ``number is zero`` = Prop.forAll Arb.int ((=) 0)
+  let ``lazy value`` = lazy Prop.forAll Arb.int (fun _ -> false)
 
   type QuotationPropertiesBuilder with
     [<CustomOperation("test")>]
@@ -46,6 +47,11 @@ module QuotationsTest =
         test (fun r pr -> not <| Runner.Result.isPassed r && pr.Labels |> Seq.exists ((=) "number is one"))
       }
 
+    let ``apply lazy value`` = property {
+        applyReturn ``lazy value``.Value
+        test (fun r pr -> not <| Runner.Result.isPassed r && pr.Labels |> Seq.exists ((=) "lazy value"))
+    }
+
   module NonReturnValue =
 
     let ``record variable name`` = property {
@@ -64,3 +70,8 @@ module QuotationsTest =
         apply ``number is one``
         test (fun r pr -> not <| Runner.Result.isPassed r && pr.Labels |> Seq.exists ((=) "number is one"))
       }
+
+    let ``apply lazy value`` = property {
+        apply ``lazy value``.Value
+        test (fun r pr -> not <| Runner.Result.isPassed r && pr.Labels |> Seq.exists ((=) "lazy value"))
+    }
