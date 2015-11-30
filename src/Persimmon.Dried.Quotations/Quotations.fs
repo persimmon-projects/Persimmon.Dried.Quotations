@@ -9,6 +9,8 @@ open Patterns
 let private (|PropertyName|) (info: PropertyInfo) = info.Name
 let private (|Property|) (info: PropertyInfo) = (info.GetValue(null, null), info.Name)
 
+let private (|MethodName|) (info: MethodInfo) = info.Name
+
 let private appendLabel add cast = function
 | ValueWithName(p, _, name) 
 // lazy value
@@ -19,6 +21,10 @@ let private appendLabel add cast = function
 // ref
 | WithValue(p, _, Call(_, _, [PropertyGet(_, PropertyName name, _)]))
 | WithValue(p, _, Call(_, _, [ValueWithName(_, _, name)]))
+// method
+| WithValue(p, _, Call(_, MethodName name, _))
+// local function
+| WithValue(p, _, Application(ValueWithName(_, _, name), _))
 // get property
 | WithValue(p, _, PropertyGet(_, PropertyName name, _))
 | PropertyGet(_, Property(p, name), _) ->

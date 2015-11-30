@@ -12,6 +12,7 @@ module QuotationsTest =
   let ``number is zero`` = Prop.forAll Arb.int ((=) 0)
   let ``lazy value`` = lazy Prop.forAll Arb.int (fun _ -> false)
   let ``ref value`` = ref <| Prop.forAll Arb.int (fun _ -> false)
+  let ``call function`` () = Prop.forAll Arb.int (fun _ -> false)
 
   type QuotationPropertiesBuilder with
     [<CustomOperation("test")>]
@@ -72,6 +73,18 @@ module QuotationsTest =
         test (fun _ pr -> pr.Labels |> Seq.exists ((=) "local value"))
     }
 
+    let ``call function and apply`` = property {
+      applyReturn (``call function`` ())
+      test (fun _ pr -> pr.Labels |> Seq.exists ((=) "call function"))
+    }
+
+    let ``call local function`` =
+      let ``local function`` () = Prop.forAll Arb.int (fun _ -> false)
+      property {
+        applyReturn (``local function`` ())
+        test (fun _ pr -> pr.Labels |> Seq.exists ((=) "local function"))
+    }
+
   module NonReturnValue =
 
     let ``record variable name`` = property {
@@ -113,4 +126,16 @@ module QuotationsTest =
       property {
         apply !``local value``
         test (fun _ pr -> pr.Labels |> Seq.exists ((=) "local value"))
+    }
+
+    let ``call function and apply`` = property {
+      apply (``call function`` ())
+      test (fun _ pr -> pr.Labels |> Seq.exists ((=) "call function"))
+    }
+
+    let ``call local function`` =
+      let ``local function`` () = Prop.forAll Arb.int (fun _ -> false)
+      property {
+        apply (``local function`` ())
+        test (fun _ pr -> pr.Labels |> Seq.exists ((=) "local function"))
     }
