@@ -58,6 +58,13 @@ module QuotationsTest =
       test (fun r pr -> not <| Runner.Result.isPassed r && pr.Labels |> Seq.exists ((=) "ref value"))
     }
 
+    let ``local lazy value`` =
+      let ``local value`` = lazy Prop.forAll Arb.int (fun _ -> false)
+      property {
+        applyReturn ``local value``.Value
+        test (fun _ pr -> pr.Labels |> Seq.exists ((=) "local value"))
+    }
+
     let ``local ref value`` =
       let ``local value`` = ref <| Prop.forAll Arb.int (fun _ -> false)
       property {
@@ -92,6 +99,13 @@ module QuotationsTest =
     let ``apply ref value`` = property {
       apply !``ref value``
       test (fun r pr -> not <| Runner.Result.isPassed r && pr.Labels |> Seq.exists ((=) "ref value"))
+    }
+
+    let ``local lazy value`` =
+      let ``local value`` = lazy Prop.forAll Arb.int (fun _ -> false)
+      property {
+        apply ``local value``.Value
+        test (fun _ pr -> pr.Labels |> Seq.exists ((=) "local value"))
     }
 
     let ``local ref value`` =

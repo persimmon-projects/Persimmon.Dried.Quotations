@@ -13,6 +13,7 @@ let private appendLabel add cast = function
 | ValueWithName(p, _, name) 
 // lazy value
 | WithValue(p, _, PropertyGet(Some(PropertyGet (None, PropertyName name, [])), _, []))
+| WithValue(p, _, PropertyGet(Some(ValueWithName(_, _, name)), _, []))
 // local variable
 | WithValue(p, _, ValueWithName(_, _, name))
 // ref
