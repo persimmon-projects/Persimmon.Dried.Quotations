@@ -1,11 +1,16 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+# Visual Studio 2013
+VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Persimmon.Dried.Quotations", "src\Persimmon.Dried.Quotations\Persimmon.Dried.Quotations.fsproj", "{B27C7CB1-8C8D-41F9-85DA-94FF8D0AAB56}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Persimmon.Dried.Quotations.Tests", "tests\Persimmon.Dried.Quotations.Tests\Persimmon.Dried.Quotations.Tests.fsproj", "{837FF42E-0463-44BD-A21B-556ABAB9B894}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{33A19A2F-0FE1-4554-9570-DF062A43B92E}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\packages.config = .nuget\packages.config
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
