@@ -70,8 +70,54 @@ type QuotationPropertiesBuilder private (builder: PropertiesBuilder) =
     }
   member __.Delay(f: unit -> _) = f
   member __.Run(f) = builder.Run(f)
+  
+type QuotationPropertiesBuilderWithoutReflectedDefinition private (builder: PropertiesBuilder) =
+  new() = QuotationPropertiesBuilderWithoutReflectedDefinition(PropertiesBuilder())
+  new(name: string) = QuotationPropertiesBuilderWithoutReflectedDefinition(PropertiesBuilder(name))
+  member __.Yield(()) = builder.Yield(())
+  [<CustomOperation("verbosity")>]
+  member __.Verbosity(s, v) = builder.Verbosity(s, v)
+  [<CustomOperation("minSuccessfulTests")>]
+  member __.MinSuccessfulTests(s, v) = builder.MinSuccessfulTests(s, v)
+  [<CustomOperation("minSize")>]
+  member __.MinSize(s, v) = builder.MinSize(s, v)
+  [<CustomOperation("maxSize")>]
+  member __.MaxSize(s, v) = builder.MaxSize(s, v)
+  [<CustomOperation("prngState")>]
+  member __.PrngState(s, v) = builder.PrngState(s, v)
+  [<CustomOperation("workers")>]
+  member __.Workers(s, v) = builder.Workers(s, v)
+  [<CustomOperation("callback")>]
+  member __.Callback(s, v) = builder.Callback(s, v)
+  [<CustomOperation("maxDiscardRatio")>]
+  member __.MaxDiscardRatio(s, v) = builder.MaxDiscardRatio(s, v)
+  [<CustomOperation("apply")>]
+  member __.Apply<'T, 'U when 'U :> Prop>(s: PropertiesState<'T>, value: 'U) =
+    let p = appendLabel (fun p n -> p :?> Prop |@ n) (fun p -> p :?> Prop) <@ value @>
+    { s with Properties = seq { yield! s.Properties; yield p } }
+  [<CustomOperation("applyReturn")>]
+  member __.ApplyReturn(s, value: Prop<'T>) =
+    let p =
+      <@ value @>
+      |> appendLabel (fun p n -> let p = p :?> Prop<'T> in new Prop<'T>(p.Sample, p |@ n)) (fun p -> p :?> Prop<'T>)
+    {
+      RunnerParams = s.RunnerParams
+      PrettyParams = s.PrettyParams
+      Properties = seq { yield! s.Properties; yield p :> Prop }
+      Sample = p.Sample
+    }
+  member __.Delay(f: unit -> _) = f
+  member __.Run(f) = builder.Run(f)
 
+#if vs2013
+let property (name: string) = QuotationPropertiesBuilderWithoutReflectedDefinition(name)
+#else
 let property (name: string) = QuotationPropertiesBuilder(name)
+#endif
 
 module UseTestNameByReflection =
+#if vs2013
+  let property = QuotationPropertiesBuilderWithoutReflectedDefinition()
+#else
   let property = QuotationPropertiesBuilder()
+#endif

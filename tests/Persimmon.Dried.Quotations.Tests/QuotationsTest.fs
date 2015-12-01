@@ -30,6 +30,22 @@ module QuotationsTest =
       try f ()
       with e -> TestCase.makeError None [] e
 
+  type QuotationPropertiesBuilderWithoutReflectedDefinition with
+    [<CustomOperation("test")>]
+    member __.Test(s: PropertiesState<_>, f) =
+      let meta = { Name = None; Parameters = [] }
+      TestCase(meta, fun () ->
+        let p = Prop.all s.Properties
+        let r = Runner.check s.RunnerParams p
+        let pr = p.Apply(Gen.Parameters.Default)
+        match assertPred <| f r pr with
+        | Passed () -> Done(meta, NonEmptyList.singleton (Passed ()), TimeSpan.Zero)
+        | NotPassed cause -> Done(meta, NonEmptyList.singleton (NotPassed cause), TimeSpan.Zero)
+      )
+    member __.Run(f: unit -> TestCase<_>) =
+      try f ()
+      with e -> TestCase.makeError None [] e
+
   module ReturnValue =
 
     let ``record variable name and return value`` = property {
