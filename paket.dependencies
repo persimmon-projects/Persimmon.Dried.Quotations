@@ -1,7 +1,7 @@
 source https://api.nuget.org/v3/index.json
 source https://www.nuget.org/api/v2/
 
-nuget Persimmon.Dried >= 1.2.0
+nuget Persimmon.Dried >= 2.0.1
 
 group Build
   source https://api.nuget.org/v3/index.json
@@ -10,6 +10,5 @@ group Build
   nuget Nuget.CommandLine
   nuget SourceLink.Fake
   nuget FAKE.Persimmon
-  nuget Persimmon.Console
 
   github fsharp/FAKE modules/Octokit/Octokit.fsx
